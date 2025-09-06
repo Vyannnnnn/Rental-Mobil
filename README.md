@@ -1,62 +1,178 @@
-# CodeIgniter 4 Application Starter
+# Rental Mobil — CodeIgniter 4
 
-## What is CodeIgniter?
+Aplikasi web untuk manajemen penyewaan mobil (rental) berbasis CodeIgniter 4. Proyek ini ditujukan untuk membantu pemilik rental mengelola armada, pemesanan, pelanggan, dan transaksi dengan alur kerja yang ringkas dan aman.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+Jika Anda menemukan bagian yang belum sesuai dengan implementasi saat ini, silakan sesuaikan. README ini disusun agar mudah dipahami oleh pengguna maupun kontributor.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## Fitur Utama
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+- Katalog Mobil
+  - Listing mobil: merk, tipe, tahun, nomor polisi, status ketersediaan, harga sewa per hari.
+  - Upload/kelola foto mobil.
+- Pemesanan & Transaksi
+  - Form pemesanan dengan rentang tanggal sewa.
+  - Perhitungan biaya otomatis (lama sewa × harga).
+  - Status transaksi: pending, aktif, selesai, batal.
+- Pelanggan
+  - Manajemen data pelanggan (identitas & kontak).
+- Autentikasi & Otorisasi
+  - Login/Logout.
+  - Role dasar: Admin dan User (opsional).
+- Laporan (opsional)
+  - Ringkasan transaksi per periode.
+  - Pendapatan dan tingkat okupansi armada.
+- Keamanan
+  - CSRF protection, validasi input, filter auth.
+- Konfigurasi & Pengaturan
+  - Basis URL, koneksi database, dan kunci enkripsi melalui `.env`.
 
-The user guide corresponding to the latest version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+Catatan: Tandai/ubah fitur yang belum diimplementasikan agar sesuai dengan progres Anda.
 
-## Installation & updates
+## Teknologi
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+- Backend: PHP (CodeIgniter 4)
+- Basis Data: MySQL/MariaDB
+- Frontend: HTML/CSS/JS (dapat dipadukan dengan Bootstrap/Tailwind sesuai kebutuhan)
+- Dependency Manager: Composer
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## Prasyarat
 
-## Setup
+- PHP 7.4 atau lebih baru dengan ekstensi:
+  - intl, mbstring, json (default), mysqlnd, curl
+- Composer
+- MySQL/MariaDB
+- Web server (Apache/Nginx) untuk produksi; untuk pengembangan dapat memakai `php spark serve`
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+## Memulai (Development)
 
-## Important Change with index.php
+1) Clone repository
+```bash
+git clone https://github.com/Vyannnnnn/Rental-Mobil.git
+cd Rental-Mobil
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+2) Install dependency
+```bash
+composer install
+```
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+3) Salin konfigurasi lingkungan
+```bash
+cp env .env
+```
 
-**Please** read the user guide for a better explanation of how CI4 works!
+4) Set `.env` penting
+- Atur URL dasar aplikasi:
+```
+app.baseURL = 'http://localhost:8080/'
+```
+- Konfigurasi database:
+```
+database.default.hostname = localhost
+database.default.database = rental_mobil
+database.default.username = root
+database.default.password = ''
+database.default.DBDriver  = MySQLi
+```
+- Generate kunci enkripsi:
+```bash
+php spark key:generate
+```
+Perintah ini akan menambahkan `encryption.key` ke file `.env`.
 
-## Repository Management
+5) Siapkan database
+- Buat database kosong `rental_mobil` (atau sesuai nama yang Anda pakai di `.env`).
+- Jalankan migrasi (dan seeder jika tersedia):
+```bash
+php spark migrate
+php spark db:seed DatabaseSeeder
+```
+Jika belum ada migrasi/seeder, Anda dapat membuatnya terlebih dahulu atau impor skema SQL yang sudah ada.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+6) Jalankan server pengembangan
+```bash
+php spark serve
+```
+Akses aplikasi di `http://localhost:8080`.
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+## Struktur Direktori (Ringkas)
 
-## Server Requirements
+```
+app/
+  Controllers/   # Logika request/response
+  Models/        # Akses data & Query Builder
+  Views/         # Tampilan (HTML/Templating)
+  Config/        # Konfigurasi aplikasi
+public/          # Document root (index.php, asset publik)
+writable/        # Cache, logs, uploads
+```
 
-PHP version 7.4 or higher is required, with the following extensions installed:
+## Alur Utama Aplikasi (Contoh)
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+- Admin:
+  1. Login sebagai admin.
+  2. Tambah data mobil (spesifikasi, harga, foto).
+  3. Kelola pelanggan dan transaksi (verifikasi pemesanan, ubah status).
+  4. Lihat laporan (opsional).
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+- Pengguna:
+  1. Lihat katalog mobil dan ketersediaannya.
+  2. Ajukan pemesanan dengan memilih rentang tanggal.
+  3. Konfirmasi pemesanan dan lakukan pembayaran (jika diimplementasikan).
+  4. Terima konfirmasi dan detail sewa.
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+Sesuaikan alur ini dengan implementasi aktual Anda.
+
+## Konfigurasi Web Server (Produksi)
+
+Index utama berada di folder `public/`. Pastikan virtual host/web root diarahkan ke folder `public`, bukan root proyek:
+
+- Apache: arahkan `DocumentRoot` ke `.../Rental-Mobil/public`
+- Nginx: arahkan `root` ke `.../Rental-Mobil/public`
+
+Ini membantu meningkatkan keamanan dengan tidak mengekspos file internal aplikasi.
+
+## Pengujian (Opsional)
+
+Jika Anda menulis test:
+```bash
+vendor/bin/phpunit
+```
+
+## Roadmap
+
+- [ ] Integrasi pembayaran online (Midtrans/Xendit) atau konfirmasi manual.
+- [ ] Manajemen denda keterlambatan dan deposit.
+- [ ] Export laporan ke PDF/Excel.
+- [ ] Notifikasi email/WhatsApp untuk konfirmasi pesanan.
+- [ ] Manajemen supir (jika sewa termasuk driver).
+
+Sesuaikan daftar ini sesuai kebutuhan proyek.
+
+## Screenshot/Demo
+
+- Tambahkan tangkapan layar UI utama Anda di sini:
+  - Dashboard Admin
+  - Daftar Mobil
+  - Form Pemesanan
+- Demo (opsional): tambahkan URL jika tersedia.
+
+## Kontribusi
+
+Kontribusi sangat diterima!
+- Fork repository, buat branch fitur: `feat/nama-fitur`
+- Commit dengan pesan yang jelas
+- Ajukan Pull Request dan jelaskan perubahan Anda
+
+## Lisensi
+
+Tambahkan lisensi proyek Anda (mis. MIT). Buat file `LICENSE` dan sebutkan jenis lisensinya di sini.
+
+## Kontak
+
+- Pemilik: @Vyannnnnn
+- Repo: https://github.com/Vyannnnnn/Rental-Mobil
+- Pertanyaan/masukan: buka Issue di repository
+
+—
+Terima kasih sudah menggunakan dan berkontribusi pada proyek Rental Mobil!
