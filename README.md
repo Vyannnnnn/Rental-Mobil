@@ -149,24 +149,6 @@ vendor/bin/phpunit
 
 Sesuaikan daftar ini sesuai kebutuhan proyek.
 
-## Screenshot/Demo
-
-- Tambahkan tangkapan layar UI utama Anda di sini:
-  - Dashboard Admin
-  - Daftar Mobil
-  - Form Pemesanan
-- Demo (opsional): tambahkan URL jika tersedia.
-
-## Kontribusi
-
-Kontribusi sangat diterima!
-- Fork repository, buat branch fitur: `feat/nama-fitur`
-- Commit dengan pesan yang jelas
-- Ajukan Pull Request dan jelaskan perubahan Anda
-
-## Lisensi
-
-Tambahkan lisensi proyek Anda (mis. MIT). Buat file `LICENSE` dan sebutkan jenis lisensinya di sini.
 
 ## Kontak
 
